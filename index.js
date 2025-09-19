@@ -14,9 +14,25 @@ app.use(express.json());
 
 // CORS Configuration
 const allowedOrigins = [
-  'http://localhost:5173', // Local React dev server
-  'https://expense-tracker-frontend.vercel.app', // Vercel frontend
-  'https://www.expensetrackerfrontend.tech' // Custom domain
+ 
+  'http://localhost:5173',
+  'http://localhost:19006',
+  'https://expense-tracker-frontend.vercel.app',
+  'https://www.expensetrackerfrontend.tech'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
+
 ];
 
 app.use(cors({
