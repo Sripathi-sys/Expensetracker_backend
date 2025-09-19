@@ -10,21 +10,35 @@ const app = express();
 connectDB();
 
 // Middleware
+app.use(express.json());
+
+// CORS Configuration
+const allowedOrigins = [
+  'http://localhost:5173', // Local React dev server
+  'https://expense-tracker-frontend.vercel.app', // Vercel frontend
+  'https://www.expensetrackerfrontend.tech' // Custom domain
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // React dev server
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-app.use(express.json());
 
 // Routes
 app.use('/api', useRoute);
 
-// Optional root route
-// app.get('/', (req, res) => {
-//   res.send("Hello Vanakam Express");
-// });
+// Root route for health check
+app.get('/', (req, res) => {
+  res.send("🚀 Expense Tracker Backend is live!");
+});
 
 // Server setup
 const PORT = process.env.PORT || 3001;
