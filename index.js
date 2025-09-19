@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const useRoute = require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes');  // ✅ renamed properly
 require('dotenv').config();
 
 const app = express();
@@ -10,54 +10,25 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(express.json());
-
-// CORS Configuration
-const allowedOrigins = [
- 
-  'http://localhost:5173',
-  'http://localhost:19006',
-  'https://expense-tracker-frontend.vercel.app',
-  'https://www.expensetrackerfrontend.tech'
-];
-
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
-
-
-];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: 'http://localhost:5173', // React dev server
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+app.use(express.json());
 
 // Routes
-app.use('/api', useRoute);
+app.use('/api', userRoutes); // ✅ renamed properly
 
-// Root route for health check
-app.get('/', (req, res) => {
-  res.send("🚀 Expense Tracker Backend is live!");
-});
+// Optional root route
+// app.get('/', (req, res) => {
+//   res.send("Hello Vanakam Express");
+// });
 
 // Server setup
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
